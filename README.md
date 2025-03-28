@@ -1,0 +1,9 @@
+In the "SQL Injection Deep Dive" project on TryHackMe, the goal was to exploit a second-order SQL injection vulnerability to extract running SQL queries from the database, in order to find a password embedded in a query and then use it for SSH access. The process began with identifying two open ports: SSH (22) and HTTP (80), through which a web interface was available for registration and login. The login attempts took 5 seconds, which indicated the likely use of the SLEEP(5) function in the SQL queries, a common characteristic of SQL injection vulnerabilities.
+
+After registering and logging in, I found that the last login page displayed user login times, and the admin logged in every minute. This automation pointed to the possibility of an XSS vulnerability or SQL injection, as the username field was reflected on the page. I then created and tested several union-based SQL injection payloads, which allowed me to extract data from the database.
+
+I wrote a Python script to automate the registration and login process, then used SQL injection to extract the relevant data. I was able to retrieve the database names, table names, and column names, then used the SUBSTR function to extract data in 16-character blocks. This allowed me to retrieve passwords for some users, but the admin's password was more difficult to crack.
+
+Next, I used the information_schema.PROCESSLIST table to intercept the currently running SQL queries. By capturing these queries, I was able to extract the admin's password, as it was being processed in one of the queries. With the discovered password, I gained SSH access to the system and retrieved the flag located in the admin's home directory.
+
+This project helped me enhance my skills with SQL injection, automating attacks using Python, and utilizing tools like PROCESSLIST to extract real-time data from the database.
